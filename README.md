@@ -1,0 +1,1 @@
+# olimpiadainformatica2025
