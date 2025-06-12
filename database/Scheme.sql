@@ -21,7 +21,7 @@ Create table Clientes (
 Cliente_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
 Nombre VARCHAR(100),
 Apellidos VARCHAR(150),
-Nombre_Usuario VARCHAR (100),
+Nombre_Usuario VARCHAR (100) PRIMARY KEY NOT NULL,
 Contrasena VARCHAR (255),
 Fecha_Nacimiento DATE,
 Pais CHAR (150),
@@ -29,13 +29,13 @@ Direccion VARCHAR (150),
 Telefono INT (15),
 Email VARCHAR (150),
 )
-
 GO
+    
 Create table Administradores(
 Admin_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
 Nombre VARCHAR(100),
 Apellidos VARCHAR (150),
-Nombre_Usuario VARCHAR (100),
+Nombre_Usuario VARCHAR (100) PRIMARY KEY NOT NULL,
 Contrasena VARCHAR (255),
 Fecha_Nacimiento DATE,
 Pais CHAR (150),
