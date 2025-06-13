@@ -17,8 +17,13 @@ COMMENT ON DATABASE "Portal turistico"
     IS 'Portal de ventas de paquetes turisticos.';
 
 GO
+
+
+CREATE TYPE Estado_Pago AS ENUM ('pendiente','cobrada','anulada');
+
+
 Create table Clientes (
-Cliente_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
+Cliente_ID int PRIMARY KEY IDENTITY(1,1) NOT NULL,
 Nombre VARCHAR(100),
 Apellidos VARCHAR(150),
 Nombre_Usuario VARCHAR (100) PRIMARY KEY NOT NULL,
@@ -32,7 +37,7 @@ Email VARCHAR (150),
 GO
     
 Create table Administradores(
-Admin_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
+Admin_ID int IDENTITY(1,1) PRIMARY KEY NOT NULL,
 Nombre VARCHAR(100),
 Apellidos VARCHAR (150),
 Nombre_Usuario VARCHAR (100) PRIMARY KEY NOT NULL,
@@ -43,6 +48,7 @@ Direccion VARCHAR (150),
 Telefono INT (15),
 Email VARCHAR (150),
 )
+
 GO
 Create table Paquete(
 Paquete_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
@@ -54,25 +60,21 @@ Precio MONEY ()
 GO
 Create table ProductosPaquete(
 Paquete_ID
-viaje_ID
-AlojamientoID
+Viaje_ID
+AlojamientoID 
 )
 
-GO
-Create table Producto(
-Producto_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
-Tipo_Producto VARCHAR (255),
-
-)
 GO
 Create table viaje(
 Viaje_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
 Tipo_Viaje VARCHAR (255),
+Origen VARCHAR (255),
 Destino VARCHAR (255),
 FechaIda DATETIME,
 FechaVuelta DATETIME,
 Precio MONEY,
 )
+
 GO
 Create table Alojamiento(
 Alojamiento_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
@@ -82,25 +84,55 @@ Desayuno VARCHAR (255),
 Fecha_Inicio DATETIME ()
 Fecha_Final DATETIME ()
 Ubicacion VARCHAR (255)
-Precio MONEY,
+Precio MONEY
 )
 
 GO
 Create table Carrito(
-Compra_ID
-Producto_ID
+Cliente_ID,
+Compra_ID,
+Producto_ID,
 Paquete_ID,
 Vencimiento DATE,
+Estado,
 )
 
 GO
 Create table DetallesCompra(
 Compra_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
-Producto_ID
-Paquete_ID
-Tipo_Paquete
-Cantidad_Paquete
-Cantidad_Producto
-Direccion
-Pais
+Cliente_ID,
+Producto_ID,
+Paquete_ID,
+Tipo_Paquete,
+Cantidad_Paquete,
+Direccion,
+Pais,
+Fecha DATETIME,
 )
+
+GO
+Create table Pago(
+Pago_ID PRIMARY KEY,
+Compra_ID,
+Pago_Metodo,
+Total,
+Restante_Pago,
+Estado Estado_Pago NOT NULL DEFAULT 'pendiente',
+)
+
+GO
+Create table Recibo(
+Recibo_ID PRIMARY KEY,
+Fecha DATETIME,
+Historial,
+)
+
+GO
+Create table Reserva(
+Reserva_ID PRIMARY KEY,
+Compra_ID,
+Producto_ID,
+Paquete_ID,
+
+)
+
