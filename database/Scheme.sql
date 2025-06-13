@@ -16,123 +16,369 @@ CREATE DATABASE "Portal turistico"
 COMMENT ON DATABASE "Portal turistico"
     IS 'Portal de ventas de paquetes turisticos.';
 
-GO
+
+CREATE TABLE IF NOT EXISTS public."Administrador"
+(
+    "Cliente_ID" bigint NOT NULL,
+    "Nombres" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    "Apellidos" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    "Nombre_Usuario" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "Contrasena" character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    "Fecha_Nacimiento" date NOT NULL,
+    "Pais" character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    "Direccion" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "Telefono" bigint NOT NULL,
+    "Email" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Administrador_pkey" PRIMARY KEY ("Cliente_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."Alojamiento"
+(
+    "Alojamiento_ID" bigint NOT NULL,
+    "Hotel" character varying COLLATE pg_catalog."default" NOT NULL,
+    "IncluyeComida" boolean NOT NULL DEFAULT false,
+    "Fecha_Inicio" date NOT NULL,
+    "Fecha_Final" date NOT NULL,
+    "Ubicación" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Precio" money NOT NULL,
+    CONSTRAINT "Alojamiento_pkey" PRIMARY KEY ("Alojamiento_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."AlquilerAuto"
+(
+    "Alquiler_ID" bigint NOT NULL,
+    "Proveedor" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Tipo_Auto" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Fecha_Inicio" date NOT NULL,
+    "Fecha_Final" date NOT NULL,
+    CONSTRAINT "AlquilerAuto_pkey" PRIMARY KEY ("Alquiler_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."Carrito"
+(
+    "Cliente_ID" bigint NOT NULL,
+    "Vencimiento" date NOT NULL,
+    "Carrito_ID" bigint NOT NULL,
+    CONSTRAINT "Carrito_pkey" PRIMARY KEY ("Carrito_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."Carrito_Item"
+(
+    "Carrito_ID" bigint NOT NULL,
+    "Paquete_ID" bigint,
+    "Viaje_ID" bigint,
+    "Alojamiento_ID" bigint,
+    "Alquiler_ID" bigint
+);
+
+CREATE TABLE IF NOT EXISTS public."Cliente"
+(
+    "Cliente_ID" bigint NOT NULL,
+    "Nombres" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    "Apellidos" character varying(100) COLLATE pg_catalog."default",
+    "Nombre_Usuario" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "Contrasena" character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    "Fecha_Nacimiento" date,
+    "Pais" character varying(50) COLLATE pg_catalog."default",
+    "Direccion" character varying(30) COLLATE pg_catalog."default",
+    "Telefono" bigint,
+    "Email" character varying(100) COLLATE pg_catalog."default",
+    CONSTRAINT "Cliente_pkey" PRIMARY KEY ("Cliente_ID"),
+    CONSTRAINT "Nombre_Usuario" UNIQUE ("Nombre_Usuario")
+);
+
+CREATE TABLE IF NOT EXISTS public."Historial"
+(
+    "Historial_ID" bigint NOT NULL,
+    "Cliente_ID" bigint NOT NULL,
+    CONSTRAINT "Historial_pkey" PRIMARY KEY ("Historial_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."Historial_Item"
+(
+    "Reserva_ID" bigint NOT NULL,
+    "Pago_ID" bigint NOT NULL,
+    "Historial_ID" bigint NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."PC_Item"
+(
+    "PC_ID" bigint NOT NULL,
+    "Paquete_ID" bigint,
+    "Viaje_ID" bigint,
+    "Alojamiento_ID" bigint,
+    "Alquiler_ID" bigint
+);
+
+CREATE TABLE IF NOT EXISTS public."Pago"
+(
+    "Pago_ID" bigint NOT NULL,
+    "PedidoDeCompra_ID" bigint NOT NULL,
+    "Pago_Metodo" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Total" money NOT NULL,
+    "Restante_Pago" money NOT NULL,
+    "Estado" character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Pago_pkey" PRIMARY KEY ("Pago_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."Paquete"
+(
+    "Paquete_ID" bigint NOT NULL,
+    "Destino" character varying COLLATE pg_catalog."default" NOT NULL,
+    "CantViajeros" bigint NOT NULL,
+    "Precio" money NOT NULL,
+    CONSTRAINT "Paquete_pkey" PRIMARY KEY ("Paquete_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."PedidoDeCompra"
+(
+    "Cliente_ID" bigint NOT NULL,
+    "Vencimiento" date NOT NULL,
+    "PedidoDeCompra_ID" bigint NOT NULL,
+    CONSTRAINT "PedidoDeCompra_pkey" PRIMARY KEY ("PedidoDeCompra_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."ProductosPaquete"
+(
+    "Paquete_ID" bigint NOT NULL,
+    "Viaje_ID" bigint NOT NULL,
+    "Alojamiento_ID" bigint NOT NULL,
+    "Alquiler_ID" bigint
+);
+
+CREATE TABLE IF NOT EXISTS public."Recibo"
+(
+    "Recibo_ID" bigint NOT NULL,
+    "Fecha" date NOT NULL,
+    "Reserva_ID" bigint NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."Reserva"
+(
+    "Reserva_ID" bigint NOT NULL,
+    "Cliente_ID" bigint,
+    CONSTRAINT "Reserva_pkey" PRIMARY KEY ("Reserva_ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."Reserva_Item"
+(
+    "Reserva_ID" bigint NOT NULL,
+    "Paquete_ID" bigint NOT NULL,
+    "Viaje_ID" bigint NOT NULL,
+    "Alojamiento_ID" bigint NOT NULL,
+    "Alquiler_ID" bigint NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."VIaje"
+(
+    "Viaje_ID" bigint NOT NULL,
+    "Tipo_Viaje" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Origen" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Destino" character varying COLLATE pg_catalog."default" NOT NULL,
+    "FechaIda" date NOT NULL,
+    "FechaVuelta" date NOT NULL,
+    "Precio" money NOT NULL,
+    CONSTRAINT "VIaje_pkey" PRIMARY KEY ("Viaje_ID")
+);
+
+ALTER TABLE IF EXISTS public."Carrito"
+    ADD CONSTRAINT "FK_Cliente" FOREIGN KEY ("Cliente_ID")
+    REFERENCES public."Cliente" ("Cliente_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
 
-CREATE TYPE Estado_Pago AS ENUM ('pendiente','cobrada','anulada');
+ALTER TABLE IF EXISTS public."Carrito_Item"
+    ADD CONSTRAINT "FK_Alojamiento" FOREIGN KEY ("Alojamiento_ID")
+    REFERENCES public."Alojamiento" ("Alojamiento_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
 
-Create table Clientes (
-Cliente_ID int PRIMARY KEY IDENTITY(1,1) NOT NULL,
-Nombre VARCHAR(100),
-Apellidos VARCHAR(150),
-Nombre_Usuario VARCHAR (100) PRIMARY KEY NOT NULL,
-Contrasena VARCHAR (255),
-Fecha_Nacimiento DATE,
-Pais CHAR (150),
-Direccion VARCHAR (150),
-Telefono INT (15),
-Email VARCHAR (150),
-)
-GO
-    
-Create table Administradores(
-Admin_ID int IDENTITY(1,1) PRIMARY KEY NOT NULL,
-Nombre VARCHAR(100),
-Apellidos VARCHAR (150),
-Nombre_Usuario VARCHAR (100) PRIMARY KEY NOT NULL,
-Contrasena VARCHAR (255),
-Fecha_Nacimiento DATE,
-Pais CHAR (150),
-Direccion VARCHAR (150),
-Telefono INT (15),
-Email VARCHAR (150),
-)
+ALTER TABLE IF EXISTS public."Carrito_Item"
+    ADD CONSTRAINT "FK_Alquiler" FOREIGN KEY ("Alquiler_ID")
+    REFERENCES public."AlquilerAuto" ("Alquiler_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
-GO
-Create table Paquete(
-Paquete_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
-Destino VARCHAR (3),//nac int
-CantViajeros int (2),
-Precio MONEY ()
-)
 
-GO
-Create table ProductosPaquete(
-Paquete_ID
-Viaje_ID
-AlojamientoID 
-)
+ALTER TABLE IF EXISTS public."Carrito_Item"
+    ADD CONSTRAINT "FK_Carrito" FOREIGN KEY ("Carrito_ID")
+    REFERENCES public."Carrito" ("Carrito_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
-GO
-Create table viaje(
-Viaje_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
-Tipo_Viaje VARCHAR (255),
-Origen VARCHAR (255),
-Destino VARCHAR (255),
-FechaIda DATETIME,
-FechaVuelta DATETIME,
-Precio MONEY,
-)
 
-GO
-Create table Alojamiento(
-Alojamiento_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
-Hotel VARCHAR (100),
-Servicios VARCHAR (255),
-Desayuno VARCHAR (255),
-Fecha_Inicio DATETIME ()
-Fecha_Final DATETIME ()
-Ubicacion VARCHAR (255)
-Precio MONEY
-)
+ALTER TABLE IF EXISTS public."Carrito_Item"
+    ADD CONSTRAINT "FK_Paquete" FOREIGN KEY ("Paquete_ID")
+    REFERENCES public."Paquete" ("Paquete_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
-GO
-Create table Carrito(
-Cliente_ID,
-Compra_ID,
-Producto_ID,
-Paquete_ID,
-Vencimiento DATE,
-Estado,
-)
 
-GO
-Create table DetallesCompra(
-Compra_ID PRIMARY KEY IDENTITY (1,1) NOT NULL,
-Cliente_ID,
-Producto_ID,
-Paquete_ID,
-Tipo_Paquete,
-Cantidad_Paquete,
-Direccion,
-Pais,
-Fecha DATETIME,
-)
+ALTER TABLE IF EXISTS public."Carrito_Item"
+    ADD CONSTRAINT "FK_Viaje" FOREIGN KEY ("Viaje_ID")
+    REFERENCES public."VIaje" ("Viaje_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
-GO
-Create table Pago(
-Pago_ID PRIMARY KEY,
-Compra_ID,
-Pago_Metodo,
-Total,
-Restante_Pago,
-Estado Estado_Pago NOT NULL DEFAULT 'pendiente',
-)
 
-GO
-Create table Recibo(
-Recibo_ID PRIMARY KEY,
-Fecha DATETIME,
-Historial,
-)
+ALTER TABLE IF EXISTS public."Historial"
+    ADD CONSTRAINT "FK_Cliente" FOREIGN KEY ("Cliente_ID")
+    REFERENCES public."Cliente" ("Cliente_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
-GO
-Create table Reserva(
-Reserva_ID PRIMARY KEY,
-Compra_ID,
-Producto_ID,
-Paquete_ID,
 
-)
+ALTER TABLE IF EXISTS public."Historial_Item"
+    ADD CONSTRAINT "FK_Historial" FOREIGN KEY ("Historial_ID")
+    REFERENCES public."Historial" ("Historial_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
+
+ALTER TABLE IF EXISTS public."Historial_Item"
+    ADD CONSTRAINT "FK_Pago" FOREIGN KEY ("Pago_ID")
+    REFERENCES public."Pago" ("Pago_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."Historial_Item"
+    ADD CONSTRAINT "FK_Reserva" FOREIGN KEY ("Reserva_ID")
+    REFERENCES public."Reserva" ("Reserva_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."PC_Item"
+    ADD CONSTRAINT "FK_Alojamiento" FOREIGN KEY ("Alojamiento_ID")
+    REFERENCES public."Alojamiento" ("Alojamiento_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."PC_Item"
+    ADD CONSTRAINT "FK_Alquiler" FOREIGN KEY ("Alquiler_ID")
+    REFERENCES public."AlquilerAuto" ("Alquiler_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."PC_Item"
+    ADD CONSTRAINT "FK_PC" FOREIGN KEY ("PC_ID")
+    REFERENCES public."PedidoDeCompra" ("PedidoDeCompra_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."PC_Item"
+    ADD CONSTRAINT "FK_Paquete" FOREIGN KEY ("Paquete_ID")
+    REFERENCES public."Paquete" ("Paquete_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."PC_Item"
+    ADD CONSTRAINT "FK_Viaje" FOREIGN KEY ("Viaje_ID")
+    REFERENCES public."VIaje" ("Viaje_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."Pago"
+    ADD CONSTRAINT "FK_PedidoDeCompra" FOREIGN KEY ("PedidoDeCompra_ID")
+    REFERENCES public."PedidoDeCompra" ("PedidoDeCompra_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."PedidoDeCompra"
+    ADD CONSTRAINT "FK_Cliente" FOREIGN KEY ("Cliente_ID")
+    REFERENCES public."Cliente" ("Cliente_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."ProductosPaquete"
+    ADD CONSTRAINT "FK_Alojamiento" FOREIGN KEY ("Alojamiento_ID")
+    REFERENCES public."Alojamiento" ("Alojamiento_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."ProductosPaquete"
+    ADD CONSTRAINT "FK_Alquiler" FOREIGN KEY ("Alquiler_ID")
+    REFERENCES public."AlquilerAuto" ("Alquiler_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."ProductosPaquete"
+    ADD CONSTRAINT "FK_Paquete" FOREIGN KEY ("Paquete_ID")
+    REFERENCES public."Paquete" ("Paquete_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."ProductosPaquete"
+    ADD CONSTRAINT "FK_Viaje" FOREIGN KEY ("Viaje_ID")
+    REFERENCES public."VIaje" ("Viaje_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public."Recibo"
+    ADD CONSTRAINT "FK_Reserva" FOREIGN KEY ("Reserva_ID")
+    REFERENCES public."Reserva" ("Reserva_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."Reserva"
+    ADD CONSTRAINT "FK_Cliente" FOREIGN KEY ("Cliente_ID")
+    REFERENCES public."Cliente" ("Cliente_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."Reserva_Item"
+    ADD CONSTRAINT "FK_Alojamiento" FOREIGN KEY ("Alojamiento_ID")
+    REFERENCES public."Alojamiento" ("Alojamiento_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."Reserva_Item"
+    ADD CONSTRAINT "FK_Alquiler" FOREIGN KEY ("Alquiler_ID")
+    REFERENCES public."AlquilerAuto" ("Alquiler_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."Reserva_Item"
+    ADD CONSTRAINT "FK_Paquete" FOREIGN KEY ("Paquete_ID")
+    REFERENCES public."Paquete" ("Paquete_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."Reserva_Item"
+    ADD CONSTRAINT "FK_Reserva" FOREIGN KEY ("Reserva_ID")
+    REFERENCES public."Reserva" ("Reserva_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."Reserva_Item"
+    ADD CONSTRAINT "FK_Viaje" FOREIGN KEY ("Viaje_ID")
+    REFERENCES public."VIaje" ("Viaje_ID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
