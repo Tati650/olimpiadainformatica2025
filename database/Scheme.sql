@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS public."Alojamiento"
     "Fecha_Final" date NOT NULL,
     "Ubicacion" character varying COLLATE pg_catalog."default" NOT NULL,
     "Precio" money NOT NULL,
+	"ImageURL" character varying COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT "Alojamiento_pkey" PRIMARY KEY ("Alojamiento_ID")
 );
 
@@ -82,6 +83,7 @@ CREATE TABLE IF NOT EXISTS public."Paquete"
     "Destino" character varying COLLATE pg_catalog."default" NOT NULL,
     "CantViajeros" bigint NOT NULL,
     "Precio" money NOT NULL,
+	"ImageURL" character varying COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT "Paquete_pkey" PRIMARY KEY ("Paquete_ID")
 );
 
