@@ -5,7 +5,7 @@ INSERT INTO public."Alojamiento" (
 (2, 'Hostería La Cumbre', false, '2025-07-10', '2025-07-15', 'La Cumbre, Córdoba', 42000.00),
 (3, 'Hotel Boutique Sur', true, '2025-08-01', '2025-08-05', 'San Martín de los Andes, Neuquén', 98000.00),
 (4, 'Cabañas El Refugio', false, '2025-09-15', '2025-09-20', 'Villa General Belgrano, Córdoba', 56000.00),
-(5, 'Hotel Patagonia Norte', true, '2025-10-01', '2025-10-10', 'Bariloche, Río Negro', 125000.00)
+(5, 'Hotel Patagonia Norte', true, '2025-10-01', '2025-10-10', 'Bariloche, Río Negro', 125000.00),
 (6, 'Hotel Royal Palace', true, '2025-12-01', '2025-12-07', 'Madrid, España', 195000.00),
 (7, 'Tokyo Garden Hotel', false, '2025-11-10', '2025-11-18', 'Tokio, Japón', 220000.00),
 (8, 'The Grand New York', true, '2025-09-01', '2025-09-10', 'Nueva York, EE.UU.', 310000.00),
