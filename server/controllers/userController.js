@@ -1,11 +1,14 @@
 const { json } = require('express');
+const { db } = require('../config/db');
+const sql = require('../config/sql');
+
 const pool = require('../config/db');
 
 
 const obtenerUsuarios = async (req, res) => {
   try {
-    const resultado = await pool.query('SELECT * FROM "Usuario"');
-    res.json(resultado.rows);
+    const resultado = await db.any(sql('Users/obtener.sql'));
+    res.json(resultado);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -13,15 +16,20 @@ const obtenerUsuarios = async (req, res) => {
 const obtenerUsuarioPorId = async (req, res) => {
   const { id } = req.params; // obtenemos el id de la URL
   try {
-    const resultado = await pool.query('SELECT * FROM "Usuario" WHERE "Cliente_ID" = $1', [id]);
-    if (resultado.rows.length === 0) {
+    const resultado = await db.any(sql('Users/obtenerPorId.sql'), [id]);
+    
+    if (resultado.length === 0) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-    res.json(resultado.rows[0]);
+
+    res.json(resultado);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+const obtenerContrasena = async (req, res) => {
+  
+}
 
 
 module.exports = {

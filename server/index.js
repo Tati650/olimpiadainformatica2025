@@ -17,9 +17,12 @@ app.use(express.json());
 //rutas:
 //importar Rutas
 const userRoutes = require('./routes/user');
+const paquetesRoutes = require('./routes/paquetes');
+
 
 //Rutas de la api
-app.use('/users', userRoutes);
+app.use('/usuarios', userRoutes);
+app.use('/paquetes', paquetesRoutes);
 
 
 // Manejo de errores básico
