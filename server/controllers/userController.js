@@ -1,12 +1,10 @@
 const { json } = require('express');
 const pool = require('../config/db');
-const sql = require('../config/sql');
-
 
 
 const obtenerUsuarios = async (req, res) => {
   try {
-    const resultado = await pool.db.any(sql('../models/usuarios/obtener.sql'));
+    const resultado = await pool.query('SELECT * FROM "Usuario"');
     res.json(resultado.rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -15,7 +13,7 @@ const obtenerUsuarios = async (req, res) => {
 const obtenerUsuarioPorId = async (req, res) => {
   const { id } = req.params; // obtenemos el id de la URL
   try {
-    const resultado = await pool.db.any(sql('../models/usuarios/obtenerPorId.sql'), [id]);
+    const resultado = await pool.query('SELECT * FROM "Usuario" WHERE "Cliente_ID" = $1', [id]);
     if (resultado.rows.length === 0) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
