@@ -7,4 +7,4 @@ function sql(file) {
   return new QueryFile(fullPath, { minify: true });
 }
 
-module.exports = sql();
+module.exports = sql;
