@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTM.com.ar</title>
+  <link rel="stylesheet" href="stilo.css">
+  <script defer src="java.js"></script>
+</head>
+<body>
+
+  <header class="zona-superior">
+    <h1>TTM</h1>
+    <div class="linea"></div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline-primary">Noches</button>
+      <button class="btn btn-outline-primary">Personas</button>
+      <button class="btn btn-outline-primary" onclick="mostrarOpciones()">Internacional/Nacional</button>
+      <a href="http://127.0.0.1:3000/admin.html" class="btn">Administrador</a>
+    </div>
+
+    <aside id="carrito">
+      <div id="carrito-header">
+        <h2>🛒 Carrito</h2>
+        <button id="toggleCarrito" class="btn btn-outline-primary" style="float: right; font-size: 12px; padding: 3px 8px;">Minimizar</button>
+      </div>
+      <div id="carrito-contenido">
+        <ul id="lista-carrito"></ul>
+        <p>Total: $<span id="total">0</span></p>
+        <a href="comprafinalizada.html" class="btn btn-outline-primary">COMPRAR</a>
+        <button class="btn btn-outline-primary" onclick="vaciarCarrito()">Vaciar carrito</button>
+      </div>
+    </aside>
+  </header>
+
+  <main class="productos">
+    <div class="producto">
+      <img src="imagenes/brasil.jpg" alt="Imagen del paquete a Brasil">
+      <h3>Paquete Brasil</h3>
+      <p>Precio: $150.000</p>
+      <p>Incluye: Estadia, Desplazamiento, Vuelo</p>
+      <button class="btn" onclick="agregarAlCarrito('Paquete Brasil', 150000)">Agregar al carrito</button>
+    </div>
+
+    <div class="producto">
+      <img src="imagenes/ESpaña.webp" alt="Imagen del paquete a España">
+      <h3>Paquete España</h3>
+      <p>Precio: $250.000</p>
+      <p>Incluye: Estadia, Vuelo, Lugares Gratis</p>
+      <button class="btn" onclick="agregarAlCarrito('Paquete España', 250000)">Agregar al carrito</button>
+    </div>
+
+    <div class="producto">
+      <img src="imagenes/peru.jpg" alt="Imagen del paquete a Perú">
+      <h3>Paquete Perú</h3>
+      <p>Precio: $120.000</p>
+      <p>Incluye: Estadia, Vuelo, Lugares Gratis</p>
+      <button class="btn" onclick="agregarAlCarrito('Paquete Perú', 120000)">Agregar al carrito</button>
+    </div>
+
+    <div class="producto">
+      <img src="imagenes/rusia.jpg" alt="Imagen del paquete a Rusia">
+      <h3>Paquete Rusia</h3>
+      <p>Precio: $345.000</p>
+      <p>Incluye: Estadia, Vuelo, Lugares Gratis</p>
+      <button class="btn" onclick="agregarAlCarrito('Paquete Rusia', 345000)">Agregar al carrito</button>
+    </div>
+
+    <div class="producto">
+      <img src="imagenes/italia.jpg" alt="Imagen del paquete a Italia">
+      <h3>Paquete Italia</h3>
+      <p>Precio: $345.000</p>
+      <p>Incluye: Estadia, Vuelo, Lugares Gratis</p>
+      <button class="btn" onclick="agregarAlCarrito('Paquete Italia', 345000)">Agregar al carrito</button>
+    </div>
+  </main>
+
+  <script>
+    let total = 0;
+
+    function agregarAlCarrito(nombre, precio) {
+      const lista = document.getElementById("lista-carrito");
+      const item = document.createElement("li");
+      item.textContent = `${nombre} - $${precio.toLocaleString()}`;
+      lista.appendChild(item);
+      total += precio;
+      document.getElementById("total").textContent = total.toLocaleString();
+    }
+
+    function vaciarCarrito() {
+      document.getElementById("lista-carrito").innerHTML = '';
+      total = 0;
+      document.getElementById("total").textContent = total;
+    }
+
+    function mostrarOpciones() {
+      alert("Esta función aún no está disponible.");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.getElementById("toggleCarrito");
+      const contenidoCarrito = document.getElementById("carrito-contenido");
+
+      toggleBtn.addEventListener("click", () => {
+        if (contenidoCarrito.style.display === "none") {
+          contenidoCarrito.style.display = "block";
+          toggleBtn.textContent = "Minimizar";
+        } else {
+          contenidoCarrito.style.display = "none";
+          toggleBtn.textContent = "Expandir";
+        }
+      });
+    });
+  </script>
+  
+  
+</body>
+</html>

@@ -1,71 +1,49 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuario</title>
-  <style>
-    table {
-      margin: auto; 
-      border-collapse: collapse;
-      width: 50%;
-    }
-    th, td {
-      border: 1px solid #000;
-      padding: 8px;
-      text-align: center;
-    }
-  <style>
-    body {
-      margin: 300px;
-      height: 100vh;
-      display: flex;
-      justify-content: center;  /* centra horizontalmente */
-      align-items: center;      /* centra verticalmente */
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 50%;
-      margin: 300px;
-    }
-
-    th, td {
-      border: 1px solid #000;
-      padding: 10px;
-      text-align: center;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuario</title>
+  <script src="java.js"></script>
+  <link rel="stylesheet" href="stilo2.css">
 </head>
+
 <body>
-
-  <table>
-    <tr>
-      <th>Nombre</th>
-    </tr>
-    <tr>
-      <td>
-            <form action="procesar.php" method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
-        <br><br>
-        <input type="submit" value="Enviar">
+  <!--<table>
+  <!--  <tr>
+  <!--    <th>Nombre</th>
+  <!--  </tr>
+  <!--  <tr>
+  <!--    <td>
+  <!--      <form action="catalogo.html" method="post">
+  <!--        <label for="nombre">Nombre:</label>
+  <!--        <input type="text" id="nombre" name="nombre" required>
+  <!--        <br><br>
+  <!--        <input type="submit" value="Enviar">
+  <!--      </form>
+  <!--    </td>
+  <!--  </tr>
+  <!--  <tr>
+  <!--    <td>Contraseña</td>
+  <!--  </tr>
+  <!--  <tr>
+  <!--    <td>
+  <!--      <input type="submit" value="Enviar">
+  <!--      <input type="password" id="password" placeholder="Contraseña" />
+  <!--      <p id="resultado"></p>
+  <!--    </td>
+  <!--  </tr>
+  <!--</table> -->
+  <form action="" style="background-color: rgb(255, 0, 0); border-radius: 10px;">
+    <form action="admin.html" method="post">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+      Contraseña
+      <input type="password" id="password" placeholder="Contraseña" />
+      <p id="resultado"></p>
+      <button class="boton">Enviar</button>
     </form>
-      </td>
-    </tr>
-    <tr>
-      <td>Contraseña</td>
-    </tr>
-    <tr>
-        <td>
-              <form action="procesar.php" method="post">
-        <label for="nombre">Contraseña:</label>
-        <input type="text" id="nombre" name="nombre" required>
-        <br><br>
-        <input type="submit" value="Enviar">
-    </form> </td>
-    </tr>
-  </table>
-
+  </form>
 </body>
 </html>
