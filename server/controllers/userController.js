@@ -28,11 +28,23 @@ const obtenerUsuarioPorId = async (req, res) => {
   }
 };
 const obtenerContrasena = async (req, res) => {
-  
+  const { user } = req.params; // obtenemos el id de la URL
+  try {
+    const resultado = await db.any(sql('Users/obtenerContrasena.sql'), [user]);
+    
+    if (resultado.length === 0) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    res.json(resultado);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
 
 
 module.exports = {
   obtenerUsuarios,
   obtenerUsuarioPorId,
+  obtenerContrasena,
 };
