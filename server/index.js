@@ -18,12 +18,16 @@ app.use(express.json());
 //importar Rutas
 const userRoutes = require('./routes/user');
 const paquetesRoutes = require('./routes/paquetes');
-
+const carritoRoutes = require('./routes/carrito')
+const PCRoutes = require('./routes/pedidoDeCompras')
+const productosRoutes= require('./routes/productos')
 
 //Rutas de la api
 app.use('/usuarios', userRoutes);
 app.use('/paquetes', paquetesRoutes);
-
+app.use('/carrito',carritoRoutes);
+app.use('/PedCompra',PCRoutes)
+app.use('/productos',productosRoutes)
 
 // Manejo de errores básico
 app.use((req, res) => {
