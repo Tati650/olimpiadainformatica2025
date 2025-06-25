@@ -5,30 +5,31 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS public."Alojamiento"
 (
-    "Alojamiento_ID" bigint NOT NULL,
+    "Alojamiento_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Hotel" character varying COLLATE pg_catalog."default" NOT NULL,
     "IncluyeComida" boolean NOT NULL DEFAULT false,
     "Fecha_Inicio" date NOT NULL,
     "Fecha_Final" date NOT NULL,
     "Ubicacion" character varying COLLATE pg_catalog."default" NOT NULL,
     "Precio" money NOT NULL,
-	"ImageURL" character varying COLLATE pg_catalog."default" NOT NULL,
+    "ImageURL" character varying COLLATE pg_catalog."default",
     CONSTRAINT "Alojamiento_pkey" PRIMARY KEY ("Alojamiento_ID")
 );
 
 CREATE TABLE IF NOT EXISTS public."AlquilerAuto"
 (
-    "Alquiler_ID" bigint NOT NULL,
+    "Alquiler_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Proveedor" character varying COLLATE pg_catalog."default" NOT NULL,
     "Tipo_Auto" character varying COLLATE pg_catalog."default" NOT NULL,
     "Fecha_Inicio" date NOT NULL,
     "Fecha_Final" date NOT NULL,
+    "Precio" money,
     CONSTRAINT "AlquilerAuto_pkey" PRIMARY KEY ("Alquiler_ID")
 );
 
 CREATE TABLE IF NOT EXISTS public."Carrito"
 (
-    "Cliente_ID" bigint NOT NULL,
+    "Cliente_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Vencimiento" date NOT NULL,
     "Carrito_ID" bigint NOT NULL,
     CONSTRAINT "Carrito_pkey" PRIMARY KEY ("Carrito_ID")
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS public."Carrito_Item"
 
 CREATE TABLE IF NOT EXISTS public."Historial"
 (
-    "Historial_ID" bigint NOT NULL,
+    "Historial_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Cliente_ID" bigint NOT NULL,
     CONSTRAINT "Historial_pkey" PRIMARY KEY ("Historial_ID")
 );
@@ -68,8 +69,8 @@ CREATE TABLE IF NOT EXISTS public."PC_Item"
 
 CREATE TABLE IF NOT EXISTS public."Pago"
 (
-    "Pago_ID" bigint NOT NULL,
-    "PedidoDeCompra_ID" bigint NOT NULL,
+    "Pago_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+    "PC_ID" bigint NOT NULL,
     "Pago_Metodo" character varying COLLATE pg_catalog."default" NOT NULL,
     "Total" money NOT NULL,
     "Restante_Pago" money NOT NULL,
@@ -79,20 +80,20 @@ CREATE TABLE IF NOT EXISTS public."Pago"
 
 CREATE TABLE IF NOT EXISTS public."Paquete"
 (
-    "Paquete_ID" bigint NOT NULL,
+    "Paquete_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Destino" character varying COLLATE pg_catalog."default" NOT NULL,
     "CantViajeros" bigint NOT NULL,
     "Precio" money NOT NULL,
-	"ImageURL" character varying COLLATE pg_catalog."default" NOT NULL,
+    "ImageURL" character varying COLLATE pg_catalog."default",
     CONSTRAINT "Paquete_pkey" PRIMARY KEY ("Paquete_ID")
 );
 
 CREATE TABLE IF NOT EXISTS public."PedidoDeCompra"
 (
-    "Cliente_ID" bigint NOT NULL,
+    "Cliente_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Vencimiento" date NOT NULL,
-    "PedidoDeCompra_ID" bigint NOT NULL,
-    CONSTRAINT "PedidoDeCompra_pkey" PRIMARY KEY ("PedidoDeCompra_ID")
+    "PC_ID" bigint NOT NULL,
+    CONSTRAINT "PedidoDeCompra_pkey" PRIMARY KEY ("PC_ID")
 );
 
 CREATE TABLE IF NOT EXISTS public."ProductosPaquete"
@@ -105,14 +106,16 @@ CREATE TABLE IF NOT EXISTS public."ProductosPaquete"
 
 CREATE TABLE IF NOT EXISTS public."Recibo"
 (
-    "Recibo_ID" bigint NOT NULL,
+    "Recibo_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Fecha" date NOT NULL,
-    "Reserva_ID" bigint NOT NULL
+    "Reserva_ID" bigint NOT NULL,
+    "Pago_ID" bigint,
+	CONSTRAINT "Recibo_pkey" PRIMARY KEY ("Recibo_ID")
 );
 
 CREATE TABLE IF NOT EXISTS public."Reserva"
 (
-    "Reserva_ID" bigint NOT NULL,
+    "Reserva_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Cliente_ID" bigint,
     CONSTRAINT "Reserva_pkey" PRIMARY KEY ("Reserva_ID")
 );
@@ -128,7 +131,7 @@ CREATE TABLE IF NOT EXISTS public."Reserva_Item"
 
 CREATE TABLE IF NOT EXISTS public."Usuario"
 (
-    "Cliente_ID" bigint NOT NULL,
+    "Cliente_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Nombres" character varying(100) COLLATE pg_catalog."default" NOT NULL,
     "Apellidos" character varying(100) COLLATE pg_catalog."default",
     "Nombre_Usuario" character varying(30) COLLATE pg_catalog."default" NOT NULL,
@@ -145,7 +148,7 @@ CREATE TABLE IF NOT EXISTS public."Usuario"
 
 CREATE TABLE IF NOT EXISTS public."Viaje"
 (
-    "Viaje_ID" bigint NOT NULL,
+    "Viaje_ID" bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
     "Tipo_Viaje" character varying COLLATE pg_catalog."default" NOT NULL,
     "Origen" character varying COLLATE pg_catalog."default" NOT NULL,
     "Destino" character varying COLLATE pg_catalog."default" NOT NULL,
@@ -241,7 +244,7 @@ ALTER TABLE IF EXISTS public."PC_Item"
 
 ALTER TABLE IF EXISTS public."PC_Item"
     ADD CONSTRAINT "FK_PC" FOREIGN KEY ("PC_ID")
-    REFERENCES public."PedidoDeCompra" ("PedidoDeCompra_ID") MATCH SIMPLE
+    REFERENCES public."PedidoDeCompra" ("PC_ID") MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
@@ -261,8 +264,8 @@ ALTER TABLE IF EXISTS public."PC_Item"
 
 
 ALTER TABLE IF EXISTS public."Pago"
-    ADD CONSTRAINT "FK_PedidoDeCompra" FOREIGN KEY ("PedidoDeCompra_ID")
-    REFERENCES public."PedidoDeCompra" ("PedidoDeCompra_ID") MATCH SIMPLE
+    ADD CONSTRAINT "FK_PedidoDeCompra" FOREIGN KEY ("PC_ID")
+    REFERENCES public."PedidoDeCompra" ("PC_ID") MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
