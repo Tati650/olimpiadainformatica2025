@@ -1,11 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>Administrador de Paquetes de Viaje</title>
+  <link rel="stylesheet" href="admin-stilo.css">
+  <script defer src="admin-js.js"></script>
 </head>
 <body>
-    hola
+
+  <h1>Administrador de Paquetes de Viaje</h1>
+
+  <form id="formularioPaquete">
+    <input type="text" id="nombre" placeholder="Nombre del paquete" required>
+    <textarea id="descripcion" placeholder="Descripción" required></textarea>
+    <input type="number" id="precio" placeholder="Precio" required>
+    <button type="submit">Agregar Paquete</button>
+  </form>
+
+  <h2>Paquetes actuales:</h2>
+  <div id="listaPaquetes"></div>
 </body>
 </html>

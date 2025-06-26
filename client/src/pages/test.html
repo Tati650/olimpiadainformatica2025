@@ -2,52 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Botón Noches con Inputs</title>
-  <style>
-    #opciones {
-      display: none;
-      margin-top: 10px;
-    }
-
-    .input-container {
-      margin-bottom: 10px;
-    }
-
-    label {
-      margin-right: 10px;
-    }
-
-    input[type="number"] {
-      width: 60px;
-      padding: 5px;
-    }
-
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+  <title>Login Agencia de Viajes</title>
 </head>
 <body>
+  <h2>Iniciar sesión</h2>
+  <form id="loginForm" onsubmit="return validarFormulario()">
+    <label for="usuario">Usuario:</label>
+    <input type="text" id="usuario" name="usuario" required><br><br>
 
-<!-- Botón principal -->
-<button onclick="toggleOpciones()">Noches</button>
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required><br><br>
 
-<!-- Contenedor de opciones con inputs -->
-<div id="opciones">
-  <div class="input-container">
-    <label for="opcion1">Opción 1:</label>
-    <input type="number" id="opcion1" value="0">
-  </div>
-</div>
+    <button type="submit">Entrar</button>
+  </form>
 
-<script>
-  function toggleOpciones() {
-    const opciones = document.getElementById('opciones');
-    opciones.style.display = opciones.style.display === 'none' ? 'block' : 'none';
-  }
-</script>
+  <script>
+    function validarFormulario() {
+      const usuario = document.getElementById("usuario").value;
+      const password = document.getElementById("password").value;
 
+      // Aquí pones los datos válidos (puedes cambiar "admin" y "1234")
+      if (usuario === "admin" && password === "1234") {
+        // Redirigir a otra página (ejemplo: pagina-principal.html)
+        window.location.href = "admin.html";
+        return false; // evita el envío normal del formulario
+      } else {
+        alert("Usuario o contraseña incorrectos.");
+        return false; // evita el envío del formulario
+      }
+    }
+  </script>
 </body>
 </html>
