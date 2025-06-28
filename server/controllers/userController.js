@@ -1,4 +1,6 @@
 const { json } = require('express');
+const session = require('express-session');
+
 const { db } = require('../config/db');
 const sql = require('../config/sql');
 
@@ -29,7 +31,8 @@ const obtenerUsuarioPorId = async (req, res) => {
 };
 const login = async (req, res) => {
   const { nombre, password } = req.body;
-  
+  console.log('Datos recibidos:', { nombre, password });
+
   // Validación básica
   if (!nombre || !password) {
     return res.status(400).json({ 
@@ -53,6 +56,10 @@ const login = async (req, res) => {
     }
 
     const usuario = usuarios[0];
+
+    console.log('Usuario encontrado en DB:', usuario);
+    console.log('Contraseña recibida:', password);
+    console.log('Contraseña en DB:', usuario.Contrasena);
     
     // Comparación directa de contraseña (sin bcrypt)
     if (password !== usuario.Contrasena) {

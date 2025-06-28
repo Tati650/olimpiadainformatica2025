@@ -5,7 +5,10 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+  credentials: true
+  
+}));
 
 //database
 const pool = require('./config/db');
@@ -15,6 +18,19 @@ const PORT = process.env.PORT || 3000;
 
 //Middlewares
 app.use(express.json());
+
+// Configuración de sesiones (DEBE IR ANTES de las rutas)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'tu_secreto_super_seguro',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Cambia a true en producción con HTTPS
+    maxAge: 3600000, // 1 hora
+    httpOnly: true,
+    sameSite: 'lax'
+  }
+}));
 
 //rutas:
 //importar Rutas
