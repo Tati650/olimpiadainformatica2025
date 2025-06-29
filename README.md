@@ -1,7 +1,7 @@
 # olimpiadainformatica2025
 carrito-turistico/
 │
-├── client/                   # Frontend (React, Vite, etc.)
+├── client/                   # Frontend (React, Vite, etc.)\n\l
 │   ├── public/               # Archivos estáticos (favicon, index.html)
 │   ├── src/
 │   │   ├── assets/           # Imágenes, íconos
