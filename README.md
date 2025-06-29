@@ -1,5 +1,5 @@
 # olimpiadainformatica2025
-carrito-turistico/
+```carrito-turistico/
 │
 ├── client/                   # Frontend (React, Vite, etc.)\n\l
 │   ├── public/               # Archivos estáticos (favicon, index.html)
@@ -40,3 +40,4 @@ carrito-turistico/
 ├── .gitignore                # Ignorar node_modules, .env, etc.
 ├── README.md                 # Descripción del proyecto
 └── LICENSE                   # (opcional)
+```
