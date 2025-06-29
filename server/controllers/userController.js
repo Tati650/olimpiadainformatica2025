@@ -31,64 +31,68 @@ const obtenerUsuarioPorId = async (req, res) => {
 };
 const login = async (req, res) => {
   const { nombre, password } = req.body;
-  console.log('Datos recibidos:', { nombre, password });
-
-  // Validación básica
-  if (!nombre || !password) {
-    return res.status(400).json({ 
-      success: false,
-      message: 'Nombre de usuario y contraseña son requeridos' 
-    });
-  }
 
   try {
-    // Buscar usuario en la base de datos
-    const usuarios = await db.any(sql('Users/obtenerContrasena.sql'), 
-      [nombre]
-    );
-    
-    // Verificar si el usuario existe
-    if (usuarios.length === 0) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Usuario no encontrado' 
-      });
+    const usuario = await db.oneOrNone(sql('Users/obtenerContrasena.sql'), [nombre]);
+    if (usuario === null || usuario.Contrasena !== password) {
+      console.log('hola')
+
+      return res.status(401).json({ error: 'Credenciales inválidas' });
     }
-
-    const usuario = usuarios[0];
-
-    console.log('Usuario encontrado en DB:', usuario);
-    console.log('Contraseña recibida:', password);
-    console.log('Contraseña en DB:', usuario.Contrasena);
-    
-    // Comparación directa de contraseña (sin bcrypt)
-    if (password !== usuario.Contrasena) {
-      return res.status(401).json({ 
-        success: false,
-        message: 'Credenciales incorrectas' 
+    req.session.user = {
+      username: usuario.Nombre_Usuario,
+      isAdmin: usuario.IsAdmin
+    };
+    req.session.save(err => {
+      if (err) {
+        console.error('Error al guardar sesión:', err);
+        return res.status(500).json({ error: 'Error interno' });
+      }
+      
+      console.log('usuario guardado correctamente.')
+      res.json({ 
+        success: true,
+        user: req.session.user
       });
-    }
-
-    // Responder sin incluir la contraseña
-    const { Contrasena, ...usuarioSinPassword } = usuario;
-    
-    // Usamos sesiones en lugar de JWT
-    req.session.user = usuarioSinPassword;
-    console.log(usuario)
-    res.json({ 
-      success: true,
-      usuario: usuarioSinPassword,
-      // En lugar de token, el frontend deberá manejar cookies de sesión
-      message: 'Sesión iniciada correctamente'
     });
+    console.log(req.session)
+    
+    
+
 
   } catch (error) {
     console.error('Error en login:', error);
-    res.status(500).json({ 
-      success: false,
-      error: 'Error interno del servidor' 
-    });
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
+};
+const checkSession = (req, res) => {
+  console.log('Headers recibidos:', req.headers);
+  console.log('Cookies recibidas:', req.cookies);
+  console.log('Sesión almacenada:', req.session);
+  console.log('usuario almacenada:', req.session.user);
+
+  if (!req.session?.user?.id) {
+    console.error('Sesión inválida. Razones posibles:',
+      '\n1. Cookie no recibida',
+      '\n2. Sesión no guardada',
+      '\n3. Problema con store de sesión');
+    return res.status(401).json({ isLoggedIn: false });
+  }
+
+  res.json({
+    isLoggedIn: true,
+    user: req.session.user
+  });
+};
+
+const logout = (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ success: false });
+    }
+    res.clearCookie('connect.sid'); // Nombre de la cookie de sesión
+    res.json({ success: true });
+  });
 };
 
 
@@ -96,4 +100,6 @@ module.exports = {
   obtenerUsuarios,
   obtenerUsuarioPorId,
   login,
+  logout,
+  checkSession,
 };

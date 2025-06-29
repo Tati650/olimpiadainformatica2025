@@ -1,58 +1,70 @@
-//.env
 require('dotenv').config();
-
-//frameworks
 const express = require('express');
-const app = express();
 const cors = require('cors');
+const session = require('express-session');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// 1. Middlewares básicos
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Actualiza la configuración de CORS y sesión:
 app.use(cors({
-  credentials: true
-  
+  origin: 'http://localhost:5500', // Usa localhost consistentemente
+  credentials: true,
+  exposedHeaders: ['set-cookie']
+
 }));
 
-//database
-const pool = require('./config/db');
-
-// nose
-const PORT = process.env.PORT || 3000;
-
-//Middlewares
-app.use(express.json());
-
-// Configuración de sesiones (DEBE IR ANTES de las rutas)
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'tu_secreto_super_seguro',
+  secret: process.env.SESSION_SECRET || 'tu-secreto-seguro',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Cambia a true en producción con HTTPS
-    maxAge: 3600000, // 1 hora
+    secure: true, // Cambia a true en producción con HTTPS
     httpOnly: true,
-    sameSite: 'lax'
-  }
+    sameSite: 'none', // Mejor para desarrollo local
+    maxAge: 24 * 60 * 60 * 1000
+  },
+  name: 'ttm.sid', // Nombre consistente
 }));
 
-//rutas:
-//importar Rutas
-const userRoutes = require('./routes/user');
-const paquetesRoutes = require('./routes/paquetes');
-const carritoRoutes = require('./routes/carrito')
-const PCRoutes = require('./routes/pedidoDeCompras')
-const productosRoutes= require('./routes/productos')
-
-//Rutas de la api
-app.use('/usuarios', userRoutes);
-app.use('/paquetes', paquetesRoutes);
-app.use('/carrito',carritoRoutes);
-app.use('/PedCompra',PCRoutes)
-app.use('/productos',productosRoutes)
-
-// Manejo de errores básico
-app.use((req, res) => {
-  res.status(404).send('Ruta no encontrada');
+// 4. Middleware de depuración (opcional)
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
 });
 
-// Iniciar servidor
+// 5. Rutas
+const routes = [
+  { path: '/usuarios', router: require('./routes/user') },
+  { path: '/paquetes', router: require('./routes/paquetes') },
+  { path: '/carrito', router: require('./routes/carrito') },
+  { path: '/PedCompra', router: require('./routes/pedidoDeCompras') },
+  { path: '/productos', router: require('./routes/productos') }
+];
+
+routes.forEach(route => {
+  app.use(route.path, route.router);
+});
+
+// 6. Manejo de errores
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
+// 7. Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
+  console.log(`\nServidor en memoria escuchando en http://localhost:${PORT}`);
+  console.log('Configuración de sesión:');
+  console.log('- Almacenamiento: Memoria');
+  console.log(`- Cookie: ttm.sid (Dominio: 127.0.0.1)`);
+  console.log(`- CORS: Permitido para http://127.0.0.1:5500\n`);
 });

@@ -5,6 +5,12 @@ const sql = require('../config/sql');
 const obtenerPaquetes = async (req, res) => {
   try {
     const resultado = await db.any(sql("Paquetes/obtener.sql"));
+  res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    
     res.json(resultado);
   } catch (error) {
     res.status(500).json({ error: error.message });

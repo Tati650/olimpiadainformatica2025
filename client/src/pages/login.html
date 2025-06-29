@@ -1,49 +1,7 @@
-<form id="loginForm" style="background-color: rgb(255, 255, 255); border-radius: 10px;">
-  <label for="nombre">Nombre:</label>
-  <input type="text" id="nombre" name="nombre" required>
-  <label for="password">Contraseña:</label>
-  <input type="password" id="password" placeholder="Contraseña" required>
-  <p id="errorMessage" style="color: rgb(42, 54, 122);"></p>
-  <button type="submit" class="boton">Enviar</button>
+<form id="loginForm">
+  <input type="text" id="username" name="username" required> <!-- Cambiado de 'nombre' a 'username' -->
+  <input type="password" id="password" required>
+  <p id="errorMessage"></p>
+  <button type="submit">Enviar</button>
 </form>
-
-<script>
-  document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const nombre = document.getElementById('nombre').value;
-    const password = document.getElementById('password').value;
-    const errorMessage = document.getElementById('errorMessage');
-    
-    try {
-      const response = await fetch('http://localhost:3001/usuarios/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nombre, password }),
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        // Guardar el token de autenticación si lo hay
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
-        }
-        
-        // Redirigir según el tipo de usuario
-        if (data.esAdmin) {
-          window.location.href = 'admin.html';
-        } else {
-          window.location.href = 'catalogo.html';
-        }
-      } else {
-        errorMessage.textContent = data.message || 'Credenciales incorrectas';
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      errorMessage.textContent = 'Error al conectar con el servidor';
-    }
-  });
-</script>
+<script src="login.js"></script> <!-- Asegúrate de cargar login.js -->

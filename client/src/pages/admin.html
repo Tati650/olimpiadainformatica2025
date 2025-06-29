@@ -1,22 +1,522 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Administrador de Paquetes de Viaje</title>
-  <link rel="stylesheet" href="admin-stilo.css">
-  <script defer src="admin-js.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - TravelTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
 </head>
 <body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading text-white py-4">
+                <h2>TravelTech</h2>
+                <small>Panel de Administración</small>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white" data-section="pedidos">
+                    <i class="fas fa-shopping-cart me-2"></i>Pedidos de Compra
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white" data-section="usuarios">
+                    <i class="fas fa-users me-2"></i>Usuarios
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white" data-section="paquetes">
+                    <i class="fas fa-suitcase me-2"></i>Paquetes
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white" data-section="productos">
+                    <i class="fas fa-hotel me-2"></i>Productos
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white" id="logout-btn">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
 
-  <h1>Administrador de Paquetes de Viaje</h1>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-sm btn-dark" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="navbar-brand ms-3">Bienvenido, <span id="admin-username">Administrador</span></div>
+            </nav>
 
-  <form id="formularioPaquete">
-    <input type="text" id="nombre" placeholder="Nombre del paquete" required>
-    <textarea id="descripcion" placeholder="Descripción" required></textarea>
-    <input type="number" id="precio" placeholder="Precio" required>
-    <button type="submit">Agregar Paquete</button>
-  </form>
+            <div class="container-fluid px-4 py-4">
+                <!-- Secciones dinámicas -->
+                <div id="dashboard-section">
+                    <h2 class="mb-4">Resumen del Sistema</h2>
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-primary text-white h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pedidos Pendientes</h5>
+                                    <h2 class="card-text" id="pedidos-count">0</h2>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="text-white" data-section="pedidos">Ver detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-success text-white h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Usuarios Registrados</h5>
+                                    <h2 class="card-text" id="usuarios-count">0</h2>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="text-white" data-section="usuarios">Ver detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-warning text-dark h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Paquetes Disponibles</h5>
+                                    <h2 class="card-text" id="paquetes-count">0</h2>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="text-dark" data-section="paquetes">Ver detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-  <h2>Paquetes actuales:</h2>
-  <div id="listaPaquetes"></div>
+                <div id="pedidos-section" class="d-none">
+                    <h2 class="mb-4">Pedidos de Compra</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Vencimiento</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pedidos-table-body">
+                                <!-- Datos cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="usuarios-section" class="d-none">
+                    <h2 class="mb-4">Usuarios Registrados</h2>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="add-user-btn">
+                            <i class="fas fa-plus me-2"></i>Agregar Usuario
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Admin</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuarios-table-body">
+                                <!-- Datos cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="paquetes-section" class="d-none">
+                    <h2 class="mb-4">Paquetes Turísticos</h2>
+                    <div class="mb-3 d-flex justify-content-between">
+                        <button class="btn btn-primary" id="add-paquete-btn">
+                            <i class="fas fa-plus me-2"></i>Agregar Paquete
+                        </button>
+                    </div>
+                    <div class="row" id="paquetes-container">
+                        <!-- Paquetes cargados dinámicamente -->
+                    </div>
+                </div>
+
+                <div id="productos-section" class="d-none">
+                    <h2 class="mb-4">Productos</h2>
+                    <ul class="nav nav-tabs" id="productos-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#alojamientos">Alojamientos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#viajes">Viajes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#autos">Autos</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="alojamientos">
+                            <button class="btn btn-primary mb-3" id="add-alojamiento-btn">
+                                <i class="fas fa-plus me-2"></i>Agregar Alojamiento
+                            </button>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Hotel</th>
+                                            <th>Ubicación</th>
+                                            <th>Fechas</th>
+                                            <th>Comida</th>
+                                            <th>Precio</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alojamientos-table-body">
+                                        <!-- Datos cargados dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="viajes">
+                            <button class="btn btn-primary mb-3" id="add-viaje-btn">
+                                <i class="fas fa-plus me-2"></i>Agregar Viaje
+                            </button>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Origen</th>
+                                            <th>Destino</th>
+                                            <th>Fechas</th>
+                                            <th>Precio</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="viajes-table-body">
+                                        <!-- Datos cargados dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="autos">
+                            <button class="btn btn-primary mb-3" id="add-auto-btn">
+                                <i class="fas fa-plus me-2"></i>Agregar Auto
+                            </button>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Proveedor</th>
+                                            <th>Tipo</th>
+                                            <th>Fechas</th>
+                                            <th>Precio</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="autos-table-body">
+                                        <!-- Datos cargados dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <!-- Modal para agregar/editar usuario -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalTitle">Agregar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-form">
+                        <input type="hidden" id="user-id">
+                        <div class="mb-3">
+                            <label for="user-nombres" class="form-label">Nombres</label>
+                            <input type="text" class="form-control" id="user-nombres" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="user-apellidos">
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-username" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="user-username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="user-password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="user-email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="user-telefono">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="user-isadmin">
+                            <label class="form-check-label" for="user-isadmin">Es Administrador</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-user-btn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar paquete -->
+    <div class="modal fade" id="paqueteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paqueteModalTitle">Agregar Paquete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="paquete-form">
+                        <input type="hidden" id="paquete-id">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="paquete-destino" class="form-label">Destino</label>
+                                <input type="text" class="form-control" id="paquete-destino" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="paquete-cantidad" class="form-label">Cantidad de Viajeros</label>
+                                <input type="number" class="form-control" id="paquete-cantidad" required min="1">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paquete-precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="paquete-precio" required min="0" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label for="paquete-imagen" class="form-label">URL de la Imagen</label>
+                            <input type="text" class="form-control" id="paquete-imagen">
+                        </div>
+                        
+                        <h5 class="mt-4">Seleccionar Productos</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>Viajes</h6>
+                                <div id="viajes-select-container" class="mb-3">
+                                    <!-- Viajes cargados dinámicamente -->
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Alojamientos</h6>
+                                <div id="alojamientos-select-container" class="mb-3">
+                                    <!-- Alojamientos cargados dinámicamente -->
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Autos</h6>
+                                <div id="autos-select-container" class="mb-3">
+                                    <!-- Autos cargados dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-paquete-btn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar alojamiento -->
+    <div class="modal fade" id="alojamientoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alojamientoModalTitle">Agregar Alojamiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="alojamiento-form">
+                        <input type="hidden" id="alojamiento-id">
+                        <div class="mb-3">
+                            <label for="alojamiento-hotel" class="form-label">Hotel</label>
+                            <input type="text" class="form-control" id="alojamiento-hotel" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="alojamiento-ubicacion" class="form-label">Ubicación</label>
+                            <input type="text" class="form-control" id="alojamiento-ubicacion" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="alojamiento-fecha-inicio" class="form-label">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="alojamiento-fecha-inicio" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="alojamiento-fecha-final" class="form-label">Fecha de Finalización</label>
+                                <input type="date" class="form-control" id="alojamiento-fecha-final" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="alojamiento-precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="alojamiento-precio" required min="0" step="0.01">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="alojamiento-comida">
+                            <label class="form-check-label" for="alojamiento-comida">Incluye Comida</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="alojamiento-imagen" class="form-label">URL de la Imagen</label>
+                            <input type="text" class="form-control" id="alojamiento-imagen">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-alojamiento-btn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar viaje -->
+    <div class="modal fade" id="viajeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viajeModalTitle">Agregar Viaje</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="viaje-form">
+                        <input type="hidden" id="viaje-id">
+                        <div class="mb-3">
+                            <label for="viaje-tipo" class="form-label">Tipo de Viaje</label>
+                            <input type="text" class="form-control" id="viaje-tipo" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="viaje-origen" class="form-label">Origen</label>
+                                <input type="text" class="form-control" id="viaje-origen" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="viaje-destino" class="form-label">Destino</label>
+                                <input type="text" class="form-control" id="viaje-destino" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="viaje-fecha-ida" class="form-label">Fecha de Ida</label>
+                                <input type="date" class="form-control" id="viaje-fecha-ida" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="viaje-fecha-vuelta" class="form-label">Fecha de Vuelta</label>
+                                <input type="date" class="form-control" id="viaje-fecha-vuelta" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="viaje-precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="viaje-precio" required min="0" step="0.01">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-viaje-btn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar auto -->
+    <div class="modal fade" id="autoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="autoModalTitle">Agregar Auto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="auto-form">
+                        <input type="hidden" id="auto-id">
+                        <div class="mb-3">
+                            <label for="auto-proveedor" class="form-label">Proveedor</label>
+                            <input type="text" class="form-control" id="auto-proveedor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="auto-tipo" class="form-label">Tipo de Auto</label>
+                            <input type="text" class="form-control" id="auto-tipo" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="auto-fecha-inicio" class="form-label">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="auto-fecha-inicio" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="auto-fecha-final" class="form-label">Fecha de Finalización</label>
+                                <input type="date" class="form-control" id="auto-fecha-final" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="auto-precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="auto-precio" min="0" step="0.01">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-auto-btn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="confirm-modal-body">
+                    ¿Estás seguro de que deseas eliminar este elemento?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/adminapi.js"></script>
+    <script type="module" src="js/adminmain.js"></script>
+    <script type="module" src="js/pedidosadm.js"></script>
+    <script type="module" src="js/useradm.js"></script>
+    <script type="module" src="js/paquetesadm.js"></script>
+    <script type="module" src="js/productosadm.js"></script>
 </body>
 </html>
