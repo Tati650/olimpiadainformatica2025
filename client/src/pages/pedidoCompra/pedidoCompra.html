@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido de Compra</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS será agregado aquí */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            text-align: center;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #34495e;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .cart-summary {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-items {
+            margin-top: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .item-quantity button {
+            background-color: #f1f1f1;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-quantity span {
+            margin: 0 10px;
+        }
+
+        .remove-item {
+            color: #e74c3c;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+
+        .order-form {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .submit-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2ecc71;
+        }
+
+        .submit-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .empty-cart i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .item-details {
+                margin-top: 10px;
+            }
+
+            .user-info {
+                position: static;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
+
+        .volver-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volver-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .volver-btn i {
+            font-size: 14px;
+        }
+
+        header .container {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <button id="volverBtn" class="volver-btn">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <h1>Pedido de Compra</h1>
+            <div class="user-info" id="userInfo">
+                <!-- Información del usuario se cargará aquí -->
+            </div>
+
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="cart-summary">
+            <h2>Resumen de tu carrito</h2>
+            <div class="cart-items" id="cartItems">
+                <!-- Los items del carrito se cargarán aquí -->
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Tu carrito está vacío</p>
+                </div>
+            </div>
+            <div class="total-section">
+                <span class="total-label">Total:</span>
+                <span class="total-amount" id="totalAmount">$0.00</span>
+            </div>
+        </section>
+
+        <section class="order-form">
+            <h2>Información del Pedido</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="shippingAddress">Dirección de Envío</label>
+                    <textarea id="shippingAddress" name="shippingAddress" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="paymentMethod">Método de Pago</label>
+                    <select id="paymentMethod" name="paymentMethod" required>
+                        <option value="">Seleccione un método</option>
+                        <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                        <option value="transferencia">Transferencia Bancaria</option>
+                        <option value="efectivo">Efectivo al Recibir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notas adicionales (opcional)</label>
+                    <textarea id="notes" name="notes"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="submit-btn" id="submitOrder" disabled>Confirmar Pedido</button>
+
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <div class="notification" id="notification">
+        Pedido realizado con éxito!
+    </div>
+
+    <script>
+        // JavaScript será agregado aquí
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener información del usuario desde sessionStorage
+            const userData = JSON.parse(sessionStorage.getItem('userData'));
+            const userInfoElement = document.getElementById('userInfo');
+
+            if (userData) {
+                userInfoElement.innerHTML = `
+                    <span>${userData.username}</span>
+                    ${userData.isAdmin ? ' <i class="fas fa-crown" title="Administrador"></i>' : ''}
+                `;
+            } else {
+                userInfoElement.innerHTML = '<span>Usuario no identificado</span>';
+            }
+
+            // Cargar carrito desde localStorage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsElement = document.getElementById('cartItems');
+            const totalAmountElement = document.getElementById('totalAmount');
+            const submitOrderButton = document.getElementById('submitOrder');
+
+            // Función para renderizar el carrito
+            function renderCart() {
+                if (cart.length === 0) {
+                    cartItemsElement.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Tu carrito está vacío</p>
+                        </div>
+                    `;
+                    submitOrderButton.disabled = true;
+                    totalAmountElement.textContent = '$0.00';
+                    return;
+                }
+
+                let html = '';
+                let total = 0;
+
+                cart.forEach((item, index) => {
+                    const itemTotal = item.precio * item.cantidad;
+                    total += itemTotal;
+
+                    html += `
+                        <div class="cart-item" data-index="${index}">
+                            <img src="${item.imagen}" alt="${item.nombre}">
+                            <div class="item-details">
+                                <h3>${item.nombre}</h3>
+                                <div class="item-price">$${item.precio.toFixed(2)}</div>
+                                <div class="item-quantity">
+                                    <button class="decrease-quantity"><i class="fas fa-minus"></i></button>
+                                    <span>${item.cantidad}</span>
+                                    <button class="increase-quantity"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <button class="remove-item"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                });
+
+                cartItemsElement.innerHTML = html;
+                totalAmountElement.textContent = `$${total.toFixed(2)}`;
+                submitOrderButton.disabled = cart.length === 0;
+
+                // Agregar event listeners a los botones de cantidad
+                document.querySelectorAll('.decrease-quantity').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const index = this.closest('.cart-item').dataset.index;
+                        if (cart[index].cantidad > 1) {
+                            cart[index].cantidad--;
+                            localStorage.setItem('cart', JSON.stringify(cart));
+                            renderCart();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.increase-quantity').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const index = this.closest('.cart-item').dataset.index;
+                        cart[index].cantidad++;
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        renderCart();
+                    });
+                });
+
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const index = this.closest('.cart-item').dataset.index;
+                        cart.splice(index, 1);
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        renderCart();
+                    });
+                });
+            }
+
+            // Manejar el envío del formulario
+            // document.getElementById('orderForm').addEventListener('submit', async function(e) {
+            //     e.preventDefault();
+
+            //     if (cart.length === 0) {
+            //         alert('El carrito está vacío');
+            //         return;
+            //     }
+
+            //     if (!userData) {
+            //         alert('Por favor inicie sesión para realizar un pedido');
+            //         return;
+            //     }
+
+            //     submitOrderButton.disabled = true;
+            //     submitOrderButton.textContent = 'Procesando...';
+
+            //     try {
+            //         const orderData = {
+            //             usuario: userData.username,
+            //             items: cart,
+            //             direccion: document.getElementById('shippingAddress').value,
+            //             metodoPago: document.getElementById('paymentMethod').value,
+            //             notas: document.getElementById('notes').value,
+            //             total: parseFloat(totalAmountElement.textContent.replace('$', ''))
+            //         };
+
+            //         // Enviar el pedido al servidor
+            //         const response = await fetch('http://localhost:3001/PedCompra', {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //             },
+            //             body: JSON.stringify(orderData),
+            //             credentials: 'include' // Para incluir cookies en la solicitud
+            //         });
+
+            //         if (!response.ok) {
+            //             throw new Error('Error al procesar el pedido');
+            //         }
+
+            //         // Mostrar notificación de éxito
+            //         const notification = document.getElementById('notification');
+            //         notification.style.display = 'block';
+            //         notification.style.backgroundColor = '#27ae60';
+            //         notification.textContent = 'Pedido realizado con éxito!';
+
+            //         // Limpiar carrito después de éxito
+            //         localStorage.removeItem('cart');
+            //         cart = [];
+            //         renderCart();
+            //         this.reset();
+
+            //         setTimeout(() => {
+            //             notification.style.display = 'none';
+            //         }, 3000);
+            document.getElementById('orderForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (cart.length === 0) {
+                    alert('El carrito está vacío');
+                    return;
+                }
+
+                if (!userData) {
+                    alert('Por favor inicie sesión para realizar un pedido');
+                    return;
+                }
+
+                submitOrderButton.disabled = true;
+                submitOrderButton.textContent = 'Procesando...';
+
+                try {
+                    // Mapear los items del carrito al formato requerido por la base de datos
+                    const mappedItems = cart.map(item => ({
+                        id: item.id,
+                        nombre: item.nombre,
+                        precio: item.precio,
+                        tipo: item.tipo || 'paquete', // Asumimos paquete por defecto, ajustar según tu aplicación
+                        cantidad: item.cantidad || 1
+                    }));
+
+                    const orderData = {
+                        usuario: userData.username,
+                        items: mappedItems,
+                        direccion: document.getElementById('shippingAddress').value,
+                        metodoPago: document.getElementById('paymentMethod').value,
+                        notas: document.getElementById('notes').value,
+                        total: parseFloat(totalAmountElement.textContent.replace('$', ''))
+                    };
+
+                    // Enviar el pedido al servidor
+                    const response = await fetch('http://localhost:3001/PedCompra', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(orderData),
+                        credentials: 'include'
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    const notification = document.getElementById('notification');
+                    notification.style.display = 'block';
+                    notification.style.backgroundColor = '#e74c3c';
+                    notification.textContent = 'Error al procesar el pedido';
+
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 3000);
+                } finally {
+                    submitOrderButton.disabled = false;
+                    submitOrderButton.textContent = 'Confirmar Pedido';
+                }
+            });
+
+            // Renderizar carrito al cargar la página
+            renderCart();
+        });
+
+        document.getElementById('volverBtn').addEventListener('click', function () {
+            // Puedes redirigir a donde necesites
+            window.location.href = '../catalogo/catalogo.html'; // o 'index.html' según tu estructura
+        });
+    </script>
+</body>
+
+</html>

@@ -7,5 +7,6 @@ router.post('/login', userController.login);
 router.get('/logout',userController.logout)
 router.get('/check-session', userController.checkSession);
 router.get('/:id', userController.obtenerUsuarioPorId);
+router.post('/registro',userController.registrarUsuario)
 
 module.exports = router;

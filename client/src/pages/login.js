@@ -31,7 +31,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       });
       
       
-      window.location.href = 'catalogo.html';
+      window.location.href = './catalogo/catalogo.html';
       
     }
   } catch (error) {

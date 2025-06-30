@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agencia De Viajes</title>
+  <link rel="stylesheet" href="stilo.css?v=1.0.1">
+  <script src="java.js?v=1.0.1"></script>
+</head>
+
+<body>
+  <header class="header-container">
+  <!-- Barra superior con usuario y logo -->
+  <div class="header-top">
+    <div class="logo-container">
+      <h1 class="logo">Agencia de Viajes</h1>
+    </div>
+    
+    <div class="user-controls">
+      <div class="user-info">
+        <span id="user-info">Cargando...</span>
+        <button onclick="logout()" class="btn-logout">
+          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </button>
+      </div>
+      
+      <div class="admin-controls">
+        <a href="../admin/admin.html" class="btn-admin" id="admin-link" style="display:none;">
+          <i class="fas fa-cog"></i> Panel Admin
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de navegación -->
+  <nav class="main-nav">
+    <div class="nav-group">
+      <a href="#" class="nav-link active"><i class="fas fa-home"></i> Inicio</a>
+      <a href="#" class="nav-link"><i class="fas fa-suitcase"></i> Paquetes</a>
+      <a href="#" class="nav-link"><i class="fas fa-question-circle"></i> Ayuda</a>
+    </div>
+    
+    <!-- Icono del carrito con contador -->
+    <div class="cart-icon-container">
+      <button id="toggleCarrito" class="cart-toggle">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-counter" id="cart-counter">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Panel del carrito desplegable -->
+  <aside id="carrito" class="cart-panel">
+    <div class="cart-header">
+      <h2><i class="fas fa-shopping-cart"></i> Tu Carrito</h2>
+      <button id="closeCarrito" class="btn-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="cart-content">
+      <ul id="lista-carrito" class="cart-items"></ul>
+      
+      <div class="cart-summary">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="total">$0</span>
+        </div>
+        
+        <div class="cart-actions">
+          <button onclick="vaciarCarrito()" class="btn-clear">
+            <i class="fas fa-trash"></i> Vaciar
+          </button>
+          <a href="../pedidoCompra/pedidoCompra.html" class="btn-checkout">
+            <i class="fas fa-credit-card"></i> Comprar
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+</header>
+
+  <!-- Contenido principal -->
+  <main class="productos">
+    <div class="loading-message">
+      <div class="loader"></div>
+      <p>Cargando paquetes...</p>
+    </div>
+  </main>
+
+  <!-- Mensaje de error (oculto inicialmente) -->
+  <div id="error-container" class="error-container" style="display:none;">
+    <p>Error al cargar los paquetes. <button onclick="cargarPaquetes()">Reintentar</button></p>
+  </div>
+
+  <script>
+    // Función global para logout
+    async function logout() {
+      try {
+        const response = await fetch('http://localhost:3001/usuarios/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        window.location.href = '../login.html';
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+      }
+    }
+  </script>
+</body>
+
+</html>
